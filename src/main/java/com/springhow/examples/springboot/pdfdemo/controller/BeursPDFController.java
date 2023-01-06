@@ -2,8 +2,8 @@ package com.springhow.examples.springboot.pdfdemo.controller;
 
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
-import com.springhow.examples.springboot.pdfdemo.OrderHelper;
-import com.springhow.examples.springboot.pdfdemo.pojo.Order;
+import com.springhow.examples.springboot.pdfdemo.BeursOrderHelper;
+import com.springhow.examples.springboot.pdfdemo.pojo.BeursOrder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,8 +23,8 @@ import java.io.IOException;
 
 @Slf4j
 @Controller
-@RequestMapping("/orders")
-public class PDFController {
+@RequestMapping("/beursorders")
+public class BeursPDFController {
 
 
     @Autowired
@@ -32,16 +32,16 @@ public class PDFController {
 
     private final TemplateEngine templateEngine;
 
-    public PDFController(TemplateEngine templateEngine) {
+    public BeursPDFController(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 
     @RequestMapping(path = "/")
     public String getOrderPage(Model model) {
         log.debug("getOrder");
-        Order order = OrderHelper.getOrder();
+        BeursOrder order = BeursOrderHelper.getOrder();
         model.addAttribute("orderEntry", order);
-        return "order";
+        return "beursOrder";
     }
 
     @RequestMapping(path = "/pdf")
@@ -49,13 +49,13 @@ public class PDFController {
         log.debug("getPdf");
         /* Do Business Logic*/
 
-        Order order = OrderHelper.getOrder();
+        BeursOrder order = BeursOrderHelper.getOrder();
 
         /* Create HTML using Thymeleaf template Engine */
 
         WebContext context = new WebContext(request, response, servletContext);
         context.setVariable("orderEntry", order);
-        String orderHtml = templateEngine.process("order", context);
+        String orderHtml = templateEngine.process("beursOrder", context);
 
         /* Setup Source and target I/O streams */
 
@@ -72,7 +72,7 @@ public class PDFController {
         /* Send the response as downloadable PDF */
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=order.pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=beursorder.pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(bytes);
 
